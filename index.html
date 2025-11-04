@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Moon Star Shopping 🛍️ Mall</title>
+<style>
+  :root{
+    --accent:#ff6b6b;
+    --muted:#6b7280;
+    --card-bg: #fff;
+    --page-bg: #f6f7fb;
+  }
+  body{font-family:Inter, system-ui, Arial; margin:0; background:var(--page-bg); color:#111;}
+  .header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(90deg,#0f172a,#0b1220);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 6px 18px rgba(2,6,23,0.3)}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+  .brand .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ff9a9e,#fecfef);display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+  nav.menu{display:flex;gap:12px;align-items:center}
+  nav.menu a{color:rgba(255,255,255,0.9);text-decoration:none;padding:8px 10px;border-radius:8px;font-size:14px}
+  nav.menu a:hover{background:rgba(255,255,255,0.06)}
+  .container{max-width:1200px;margin:22px auto;padding:0 18px;}
+  .offer-wrap{position:relative;margin-bottom:18px;overflow:hidden;border-radius:12px;background:#111;color:#fff;padding:12px}
+  .offers{display:flex;gap:18px;align-items:center;white-space:nowrap;animation:slide 15s linear infinite}
+  .offer{min-width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;box-sizing:border-box}
+  .offer h3{margin:0;font-size:18px}
+  .offer p{margin:0;color:var(--muted);font-size:14px}
+  @keyframes slide{0%{transform:translateX(0)}33%{transform:translateX(-100%)}66%{transform:translateX(-200%)}100%{transform:translateX(0)}}
+  .small-btn{background:rgba(255,255,255,0.08);border:0;color:#fff;padding:6px 8px;border-radius:8px;cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .card{background:var(--card-bg);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(14,20,30,0.08);transition:transform .32s ease, box-shadow .32s ease, opacity .4s;opacity:0;transform:translateY(12px) scale(.99)}
+  .card.visible{opacity:1;transform:translateY(0) scale(1)}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(12,18,40,0.12)}
+  .thumb{height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:linear-gradient(180deg,#f3f6fb,#fff)}
+  .thumb img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .6s ease}
+  .card:hover .thumb img{transform:scale(1.05)}
+  .title{font-size:14px;min-height:42px;margin-top:8px;color:#0f172a}
+  .price{font-weight:800;font-size:16px;margin-top:4px;color:var(--accent)}
+  .order-row{margin-top:10px;display:flex;gap:8px}
+  .btn{flex:1;padding:10px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#ff8c42);color:#fff}
+  .btn-ghost{background:transparent;border:1px solid #eee}
+  footer{margin-top:28px;padding:18px;text-align:center;color:var(--muted);font-size:14px}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="logo">MS</div>
+    <div>
+      <div style="font-size:16px">Moon Star Shopping 🛍️ Mall</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7)">Best deals, daily offers</div>
+    </div>
+  </div>
+  <nav class="menu">
+    <a href="#home">Home</a>
+    <a href="#offers">Offers</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section id="offers" class="offer-wrap">
+    <div class="offers" id="offers-track">
+      <div class="offer">
+        <div><h3>Big Weekend Sale — Up to 40% OFF</h3><p>Use code <strong>MOON40</strong>. Limited time only!</p></div>
+        <div><button class="small-btn" id="toggle-offer-auto">Pause</button></div>
+      </div>
+      <div class="offer">
+        <div><h3>Free Delivery on orders ₹999+</h3><p>Choose Cash on Delivery at checkout.</p></div>
+        <div><button class="small-btn">Shop Now</button></div>
+      </div>
+      <div class="offer">
+        <div><h3>New Arrivals — Trending Now</h3><p>Fresh picks added daily.</p></div>
+        <div><button class="small-btn">Explore</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 style="margin:0">Products</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="refresh-btn" class="small-btn">Refresh</button>
+      </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+  </section>
+</main>
+
+<footer id="contact">
+  <div>© <strong>Moon Star Shopping 🛍️ Mall</strong> — All rights reserved.</div>
+</footer>
+
+<script>
+const SHEET_ID = "PASTE_YOUR_SHEET_ID_HERE";
+const SHEET_NAME = "Products";
+const GRID = document.getElementById('grid');
+
+// Fetch and render
+async function fetchSheetProducts(){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&tq=${encodeURIComponent('select A,B,C,D')}`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
+  const rows = json.table.rows;
+  return rows.map(r => ({
+    product_url: r.c[0]?.v || '',
+    price: r.c[1]?.v || '',
+    title: r.c[2]?.v || '',
+    image: r.c[3]?.v || ''
+  }));
+}
+
+// Render cards
+function renderItems(items){
+  GRID.innerHTML = '';
+  items.forEach((it, i)=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="thumb"><img src="${it.image}" alt="${it.title}"></div>
+      <div class="title">${it.title}</div>
+      <div class="price">₹${it.price}</div>
+      <div class="order-row">
+        <button class="btn btn-primary order-now">Order</button>
+        <button class="btn btn-ghost share-now">Share</button>
+      </div>
+    `;
+    card.querySelector('.order-now').addEventListener('click',()=>alert('Order placed for '+it.title));
+    card.querySelector('.share-now').addEventListener('click',()=>shareProduct(it));
+    setTimeout(()=>card.classList.add('visible'),100*(i+1));
+    GRID.appendChild(card);
+  });
+}
+
+// Share logic
+async function shareProduct(it){
+  const shareData = {
+    title: it.title,
+    text: `देखिए ये शानदार प्रोडक्ट — ${it.title}\nकीमत: ₹${it.price}\n`,
+    url: it.product_url || window.location.href
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(shareData);
+    }else{
+      prompt("Copy link to share:", shareData.url);
+    }
+  }catch(err){
+    console.log('Share cancelled', err);
+  }
+}
+
+// Load on start
+fetchSheetProducts().then(renderItems);
+
+// Offer banner toggle
+let offerRunning = true;
+document.getElementById('toggle-offer-auto').addEventListener('click',function(){
+  offerRunning = !offerRunning;
+  const track = document.getElementById('offers-track');
+  track.style.animationPlayState = offerRunning ? 'running' : 'paused';
+  this.innerText = offerRunning ? 'Pause' : 'Resume';
+});
+</script>
+</body>
+</html>
