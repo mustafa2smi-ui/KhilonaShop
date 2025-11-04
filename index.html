@@ -198,7 +198,7 @@ async function fetchSheetProducts(){
     return [];
   }
 }
-
+/*
 // render grid
 function renderItems(items){
   GRID.innerHTML = '';
@@ -234,6 +234,63 @@ function renderItems(items){
 
 // escape
 function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+*/
+  // render grid
+function renderItems(items){
+  GRID.innerHTML = '';
+  if(!items || items.length === 0){
+    GRID.innerHTML = `<div style="padding:18px;background:#fff;border-radius:12px;grid-column:1/-1">No products found. Add rows in your Google Sheet (product_url, price, title, image).</div>`;
+    return;
+  }
+  items.forEach((it, i) => {
+    const img = it.image && it.image.length>5 ? it.image : "https://via.placeholder.com/400x400?text=No+Image";
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="thumb"><img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(it.title)}"></div>
+      <div class="title">${escapeHtml(it.title)}</div>
+      <div class="price">₹${escapeHtml(it.price)}</div>
+      <div class="order-row">
+        <button class="btn btn-primary order-now">Order Now</button>
+        <button class="btn btn-ghost share-btn">Share</button>  </div>
+    `;
+    // delayed reveal animation
+    setTimeout(()=> card.classList.add('visible'), 80 * (i+1));
+    
+    // 👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
+    // START: CORRECT PLACE FOR CLICK HANDLERS (Inside renderItems)
+    
+    // 1. Order Now handler
+    card.querySelector('.order-now').addEventListener('click', ()=> openOrder(it));
+
+    // 2. Share Button handler
+    card.querySelector('.share-btn').addEventListener('click', ()=> {
+        const shareData = {
+            title: `Moon Star Deal: ${it.title}`,
+            text: `देखिए शानदार प्रोडक्ट! सिर्फ ₹${it.price} में। तुरंत ऑर्डर करें।`,
+            url: window.location.href // आपकी वेबसाइट का लिंक
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData)
+                .then(() => console.log('Product shared successfully'))
+                .catch((error) => console.error('Error sharing:', error));
+        } else {
+            // Fallback for browsers that do not support navigator.share
+            alert(`Share Link (Copy Paste): ${shareData.text} ${shareData.url}`);
+        }
+    });
+
+    // END: CORRECT PLACE FOR CLICK HANDLERS
+    // 👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆
+    
+    GRID.appendChild(card);
+  });
+}
+
+// escape
+function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
 
 // open order modal
 function openOrder(item){
@@ -315,31 +372,6 @@ document.getElementById('toggle-offer-auto').addEventListener('click', function(
     this.innerText = 'Pause';
   }
 });
-// ...
-// click handlers
-card.querySelector('.order-now').addEventListener('click', ()=> openOrder(it));
-
-// Share Button Logic
-card.querySelector('.share-btn').addEventListener('click', ()=> {
-    const shareData = {
-        title: `Moon Star Deal: ${it.title}`,
-        text: `देखिए शानदार प्रोडक्ट! सिर्फ ₹${it.price} में। तुरंत ऑर्डर करें।`,
-        url: window.location.href // आपकी वेबसाइट का लिंक
-    };
-
-    if (navigator.share) {
-        navigator.share(shareData)
-            .then(() => console.log('Product shared successfully'))
-            .catch((error) => console.error('Error sharing:', error));
-    } else {
-        // Fallback for browsers that do not support navigator.share
-        alert(`Share Link (Copy Paste): ${shareData.text} ${shareData.url}`);
-    }
-});
-
-GRID.appendChild(card);
-// ...
-                  
 // initial
 loadAndRender();
 </script>
