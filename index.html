@@ -216,7 +216,7 @@ function renderItems(items){
       <div class="price">₹${escapeHtml(it.price)}</div>
       <div class="order-row">
         <button class="btn btn-primary order-now">Order Now</button>
-        <button class="btn btn-ghost view-det">View</button>
+        <button class="btn btn-ghost share-btn">Share</button>
       </div>
     `;
     // delayed reveal animation
@@ -315,7 +315,31 @@ document.getElementById('toggle-offer-auto').addEventListener('click', function(
     this.innerText = 'Pause';
   }
 });
+// ...
+// click handlers
+card.querySelector('.order-now').addEventListener('click', ()=> openOrder(it));
 
+// Share Button Logic
+card.querySelector('.share-btn').addEventListener('click', ()=> {
+    const shareData = {
+        title: `Moon Star Deal: ${it.title}`,
+        text: `देखिए शानदार प्रोडक्ट! सिर्फ ₹${it.price} में। तुरंत ऑर्डर करें।`,
+        url: window.location.href // आपकी वेबसाइट का लिंक
+    };
+
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => console.log('Product shared successfully'))
+            .catch((error) => console.error('Error sharing:', error));
+    } else {
+        // Fallback for browsers that do not support navigator.share
+        alert(`Share Link (Copy Paste): ${shareData.text} ${shareData.url}`);
+    }
+});
+
+GRID.appendChild(card);
+// ...
+                  
 // initial
 loadAndRender();
 </script>
