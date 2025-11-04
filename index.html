@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Moon Star Shopping 🛍️ Mall</title>
+<style>
+  :root{
+    --accent:#ff6b6b;
+    --muted:#6b7280;
+    --card-bg: #fff;
+    --page-bg: #f6f7fb;
+    --glass: rgba(255,255,255,0.6);
+  }
+  body{font-family:Inter, system-ui, Arial; margin:0; background:var(--page-bg); color:#111;}
+  /* Header */
+  .header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(90deg,#0f172a,#0b1220);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 6px 18px rgba(2,6,23,0.3)}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+  .brand .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ff9a9e,#fecfef);display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+  nav.menu{display:flex;gap:12px;align-items:center}
+  nav.menu a{color:rgba(255,255,255,0.9);text-decoration:none;padding:8px 10px;border-radius:8px;font-size:14px}
+  nav.menu a:hover{background:rgba(255,255,255,0.06)}
+  .container{max-width:1200px;margin:22px auto;padding:0 18px;}
+  /* Offer banner */
+  .offer-wrap{position:relative;margin-bottom:18px;overflow:hidden;border-radius:12px;background:#111;color:#fff;padding:12px}
+  .offers{display:flex;gap:18px;align-items:center;white-space:nowrap;animation:slide 15s linear infinite}
+  .offer{min-width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;box-sizing:border-box}
+  .offer h3{margin:0;font-size:18px}
+  .offer p{margin:0;color:var(--muted);font-size:14px}
+  @keyframes slide{0%{transform:translateX(0)}33%{transform:translateX(-100%)}66%{transform:translateX(-200%)}100%{transform:translateX(0)}}
+  .offer-controls{position:absolute;right:12px;top:12px;display:flex;gap:8px}
+  .small-btn{background:rgba(255,255,255,0.08);border:0;color:#fff;padding:6px 8px;border-radius:8px;cursor:pointer}
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .card{background:var(--card-bg);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(14,20,30,0.08);transition:transform .32s ease, box-shadow .32s ease, opacity .4s;opacity:0;transform:translateY(12px) scale(.99)}
+  .card.visible{opacity:1;transform:translateY(0) scale(1)}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(12,18,40,0.12)}
+  .thumb{height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:linear-gradient(180deg,#f3f6fb,#fff)}
+  .thumb img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .6s ease}
+  .card:hover .thumb img{transform:scale(1.05)}
+  .title{font-size:14px;min-height:42px;margin-top:8px;color:#0f172a}
+  .price{font-weight:800;font-size:16px;margin-top:4px;color:var(--accent)}
+  .order-row{margin-top:10px;display:flex;gap:8px}
+  .btn{flex:1;padding:10px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#ff8c42);color:#fff}
+  .btn-ghost{background:transparent;border:1px solid #eee}
+  /* modal */
+  .modal-wrap{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.5);z-index:120}
+  .modal{width:92%;max-width:520px;background:#fff;padding:18px;border-radius:12px;box-shadow:0 30px 80px rgba(2,6,23,0.4)}
+  .modal h3{margin:0 0 8px 0}
+  .field{margin-bottom:10px}
+  input[type="text"],input[type="email"],textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:14px;box-sizing:border-box}
+  textarea{min-height:80px;resize:vertical}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end}
+  /* footer */
+  footer{margin-top:28px;padding:18px;text-align:center;color:var(--muted);font-size:14px}
+  /* loading shimmer */
+  .skeleton{height:160px;background:linear-gradient(90deg,#f6f7fb,#eceff4,#f6f7fb);background-size:200% 100%;animation:shimmer 1.2s linear infinite;border-radius:10px}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  /* responsive tweaks */
+  @media (max-width:640px){ .offers{animation:none} .offer{min-width:100%} nav.menu{display:none} .brand{gap:8px} }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <div class="logo">MS</div>
+      <div>
+        <div style="font-size:16px">Moon Star Shopping 🛍️ Mall</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.7)">Best deals, daily offers</div>
+      </div>
+    </div>
+    <nav class="menu">
+      <a href="#home">Home</a>
+      <a href="#offers">Offers</a>
+      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Offer Banner -->
+    <section id="offers" class="offer-wrap">
+      <div class="offers" id="offers-track">
+        <div class="offer">
+          <div>
+            <h3>Big Weekend Sale — Up to 40% OFF</h3>
+            <p>Use code <strong>MOON40</strong>. Limited time only!</p>
+          </div>
+          <div><button class="small-btn" id="toggle-offer-auto">Pause</button></div>
+        </div>
+
+        <div class="offer">
+          <div>
+            <h3>Free Delivery on orders ₹999+</h3>
+            <p>Choose Cash on Delivery at checkout.</p>
+          </div>
+          <div><button class="small-btn">Shop Now</button></div>
+        </div>
+
+        <div class="offer">
+          <div>
+            <h3>New Arrivals — Trending Now</h3>
+            <p>Fresh picks added daily.</p>
+          </div>
+          <div><button class="small-btn">Explore</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product grid -->
+    <section>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h2 style="margin:0">Products</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="refresh-btn" class="small-btn">Refresh</button>
+          <label style="font-size:13px;color:var(--muted)"><input id="auto-refresh" type="checkbox" style="margin-right:6px">Auto-refresh</label>
+        </div>
+      </div>
+
+      <div id="grid" class="grid">
+        <!-- cards injected here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Order modal -->
+  <div id="modal" class="modal-wrap" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 id="modal-title">Order</h3>
+      <form id="orderForm">
+        <div class="field"><input id="cust-name" type="text" placeholder="Name" required></div>
+        <div class="field"><input id="cust-mobile" type="text" placeholder="Mobile" required></div>
+        <div class="field"><input id="cust-email" type="email" placeholder="Email (optional)"></div>
+        <div class="field"><textarea id="cust-address" placeholder="Address" required></textarea></div>
+        <div class="field"><input id="cust-pincode" type="text" placeholder="Pincode"></div>
+        <input type="hidden" id="product-title">
+        <input type="hidden" id="product-price">
+        <div class="modal-actions">
+          <button type="button" id="close-modal" class="small-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm COD</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer id="contact">
+    <div>© <strong>Moon Star Shopping 🛍️ Mall</strong> — All rights reserved.</div>
+    <div style="margin-top:8px"><a href="#" style="color:inherit;text-decoration:underline">Terms</a> • <a href="#" style="color:inherit;text-decoration:underline">Privacy</a> • <a href="#" style="color:inherit;text-decoration:underline">Contact</a></div>
+  </footer>
+
+<script>
+/*
+  Frontend-only Google Sheet reader (uses gviz JSON)
+  IMPORTANT: Set SHEET_ID to your spreadsheet ID and make Products sheet public/viewable.
+  Sheet layout (first row headers): product_url | price | title | image
+*/
+const SHEET_ID = "PASTE_YOUR_SHEET_ID_HERE";   // <-- replace this
+const SHEET_NAME = "Products";                 // <-- sheet/tab name
+const GRID = document.getElementById('grid');
+const REFRESH_BTN = document.getElementById('refresh-btn');
+const AUTO_CB = document.getElementById('auto-refresh');
+const MODAL = document.getElementById('modal');
+const ORDER_FORM = document.getElementById('orderForm');
+let autoTimer = null;
+let lastItemsCount = 0;
+
+// helper: fetch gviz JSON and parse
+async function fetchSheetProducts(){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&tq=${encodeURIComponent('select A,B,C,D')}`;
+  try{
+    const res = await fetch(url);
+    const text = await res.text();
+    // gviz returns: /**/google.visualization.Query.setResponse({...});
+    const jsonText = text.replace(/^[^\(]*\(/,'').replace(/\);?$/,'');
+    const data = JSON.parse(jsonText);
+    const cols = data.table.cols.map(c => (c.label || '').toLowerCase());
+    const rows = data.table.rows || [];
+    const items = rows.map((r, idx) => {
+      const c = r.c;
+      // map by header positions (we expect product_url, price, title, image)
+      const obj = {};
+      cols.forEach((colName, i) => {
+        obj[colName || `col${i}`] = (c[i] && c[i].v) ? String(c[i].v).trim() : "";
+      });
+      // normalize
+      return {
+        id: idx + 1,
+        product_url: obj['product_url'] || obj['a'] || '',
+        price: obj['price'] || obj['b'] || '',
+        title: obj['title'] || obj['c'] || 'Product',
+        image: obj['image'] || obj['d'] || ''
+      };
+    });
+    return items;
+  } catch(err){
+    console.error("Sheet fetch error:", err);
+    return [];
+  }
+}
+
+// render grid
+function renderItems(items){
+  GRID.innerHTML = '';
+  if(!items || items.length === 0){
+    GRID.innerHTML = `<div style="padding:18px;background:#fff;border-radius:12px;grid-column:1/-1">No products found. Add rows in your Google Sheet (product_url, price, title, image).</div>`;
+    return;
+  }
+  items.forEach((it, i) => {
+    const img = it.image && it.image.length>5 ? it.image : "https://via.placeholder.com/400x400?text=No+Image";
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="thumb"><img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(it.title)}"></div>
+      <div class="title">${escapeHtml(it.title)}</div>
+      <div class="price">₹${escapeHtml(it.price)}</div>
+      <div class="order-row">
+        <button class="btn btn-primary order-now">Order Now</button>
+        <button class="btn btn-ghost view-det">View</button>
+      </div>
+    `;
+    // delayed reveal animation
+    setTimeout(()=> card.classList.add('visible'), 80 * (i+1));
+    // click handlers
+    card.querySelector('.order-now').addEventListener('click', ()=> openOrder(it));
+    card.querySelector('.view-det').addEventListener('click', ()=> {
+      // small quick view: open product_url in new tab (optional)
+      if(it.product_url) window.open(it.product_url,'_blank');
+      else alert('No product link available.');
+    });
+    GRID.appendChild(card);
+  });
+}
+
+// escape
+function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// open order modal
+function openOrder(item){
+  document.getElementById('modal-title').innerText = `Order — ${item.title}`;
+  document.getElementById('product-title').value = item.title;
+  document.getElementById('product-price').value = item.price;
+  // reset fields
+  document.getElementById('cust-name').value = '';
+  document.getElementById('cust-mobile').value = '';
+  document.getElementById('cust-email').value = '';
+  document.getElementById('cust-address').value = '';
+  document.getElementById('cust-pincode').value = '';
+  MODAL.style.display = 'flex';
+  MODAL.setAttribute('aria-hidden','false');
+}
+
+// close modal
+document.getElementById('close-modal').addEventListener('click', closeModal);
+function closeModal(){ MODAL.style.display='none'; MODAL.setAttribute('aria-hidden','true'); }
+
+// handle order submit (demo: save to localStorage and show success)
+ORDER_FORM.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const payload = {
+    name: document.getElementById('cust-name').value.trim(),
+    mobile: document.getElementById('cust-mobile').value.trim(),
+    email: document.getElementById('cust-email').value.trim(),
+    address: document.getElementById('cust-address').value.trim(),
+    pincode: document.getElementById('cust-pincode').value.trim(),
+    product_title: document.getElementById('product-title').value,
+    product_price: document.getElementById('product-price').value,
+    date: new Date().toISOString()
+  };
+  if(!payload.name || !payload.mobile || !payload.address){
+    alert('Name, Mobile and Address are required.');
+    return;
+  }
+  // save demo: localStorage (you will later replace this with Apps Script POST)
+  const orders = JSON.parse(localStorage.getItem('demo_orders_v1') || '[]');
+  orders.push(payload);
+  localStorage.setItem('demo_orders_v1', JSON.stringify(orders));
+  alert('Order placed (demo). Saved locally. In production connect this to Apps Script POST to save to Google Sheet.');
+  closeModal();
+});
+
+// refresh handler
+REFRESH_BTN.addEventListener('click', loadAndRender);
+AUTO_CB.addEventListener('change', ()=>{
+  if(AUTO_CB.checked){
+    autoTimer = setInterval(loadAndRender, 20000); // every 20s
+  } else {
+    clearInterval(autoTimer);
+  }
+});
+
+// load & render
+async function loadAndRender(){
+  GRID.innerHTML = `<div class="skeleton" style="grid-column:1/-1"></div>`;
+  const items = await fetchSheetProducts();
+  renderItems(items);
+  // check for new items count (optional visual cue)
+  if(items.length > lastItemsCount && lastItemsCount>0){
+    // flash highlight
+    document.querySelector('.header').animate([{background:'#111'},{background:'#132033'},{background:'#111'}],{duration:900});
+  }
+  lastItemsCount = items.length;
+}
+
+// Offer banner pause
+let offerRunning = true;
+document.getElementById('toggle-offer-auto').addEventListener('click', function(){
+  offerRunning = !offerRunning;
+  const track = document.getElementById('offers-track');
+  if(!offerRunning){
+    track.style.animationPlayState = 'paused';
+    this.innerText = 'Resume';
+  } else {
+    track.style.animationPlayState = 'running';
+    this.innerText = 'Pause';
+  }
+});
+
+// initial
+loadAndRender();
+</script>
+</body>
+</html>
